@@ -26,8 +26,7 @@ class UsersController extends AbstractController
 {
 
      /**
-     * Cette méthode permet de récupérer l'ensemble des livres.
-     *
+     * Cette méthode permet de récupérer l'ensemble des Users
      * @OA\Response(
      *     response=200,
      *     description="Retourne la liste des Users",
@@ -73,7 +72,7 @@ class UsersController extends AbstractController
 //         return new JsonResponse($jsonBookList, Response::HTTP_OK, [], true);
 //    }
 
-   #[Route('/api/users', name: 'book', methods: ['GET'])]
+   #[Route('/api/users', name: 'detailUsers', methods: ['GET'])]
    public function getUsersList(Request $request,UsersRepository $usersRepository,SerializerInterface $serializer): JsonResponse
    {
        $page = $request->get('page', 1);
@@ -84,7 +83,25 @@ class UsersController extends AbstractController
        return new JsonResponse($jsonBookList, Response::HTTP_OK, [], true);
    }
 
-
+     /**
+     * Cette méthode permet de récuperer les info d'un User
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Retourne la liste d'un User Specifique",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Users::class, groups={"geB"}))
+     *     )
+     *
+     * )
+     * @OA\Tag(name="Users")
+     *
+     * @param UsersRepository $usersRepository
+     * @param SerializerInterface $serializer
+     * @param Request $request
+     * @return JsonResponse
+     */
     #[Route('/api/user/{id}', name: 'users_id', methods: ['GET'])]
     public function getUsersId(Users $users,SerializerInterface $serializer): JsonResponse
     {
@@ -92,15 +109,46 @@ class UsersController extends AbstractController
         return new JsonResponse($jsonBook, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
-    #[Route('/api/user/{id}', name: 'deleteBook', methods: ['DELETE'])]
-    public function deleteUsers(Users $users, EntityManagerInterface $em): JsonResponse 
-    {
+
+  /**
+     * Cette méthode permet de supprimer un User par rapport à son id. 
+     *
+     *  @OA\Tag(name="Users")
+     * 
+     * 
+     * @param Users $users
+     * @param EntityManagerInterface $em
+     * @return JsonResponse 
+     */
+    #[Route('/api/user/{id}', name: 'deleteUser', methods: ['DELETE'])]
+    public function deleteUser(Users $users, EntityManagerInterface $em): JsonResponse {
         $em->remove($users);
         $em->flush();
-
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+      /**
+     * Cette méthode permet d'insérer un nouveau Uttilisateur. 
+     * Exemple de données : 
+     * {
+     *     "Nom": "Le Seigneur des Anneaux",
+     *     "Prenom": "C'est l'histoire d'un anneau unique", 
+     *     "idOrder": 5
+     * }
+     * 
+     * @OA\Tag(name="Users")
+     * 
+     * Le paramètre idOrder est géré "à la main", pour créer l'association
+     * entre un User et un Order. 
+     * S'il ne correspond pas à un auteur valide, alors le livre sera considéré comme sans auteur. 
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $em
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param AuthorRepository $authorRepository
+     * @return JsonResponse
+     */
     #[Route('/api/user', name:"createUsers", methods: ['POST'])] 
     public function createBook(Request $request, SerializerInterface $serializer, EntityManagerInterface $em,UrlGeneratorInterface $urlGenerator,OrderRepository $orderRepository): JsonResponse {
         $users = $serializer->deserialize($request->getContent(), Users::class, 'json');
