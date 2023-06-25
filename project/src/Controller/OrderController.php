@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use JMS\Serializer\Serializer;
-use JMS\Serializer\SerializationContext;   
-use JMS\Serializer\SerializerInterface; 
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use App\Repository\OrderRepository;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use App\Repository\UsersRepository;
@@ -23,13 +23,13 @@ use  Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class OrderController extends AbstractController
 {
     #[Route('/api/orders', name: 'order', methods: ['GET'])]
-    public function getOrdersList(Request $request,OrderRepository $orderRepository, SerializerInterface $serializer): JsonResponse
+    public function getOrdersList(Request $request,OrderRepository $orderRepository,SerializerInterface $serializer): JsonResponse
     {
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 3);
         $orderList = $orderRepository->findAllWithPagination($page, $limit);
         $context = SerializationContext::create()->setGroups(['getOrders']);
-        $jsonOrderList = $serializer->serialize($orderList, 'json',$context);
+        $jsonBookList = $serializer->serialize($bookList, 'json', $context);
         return new JsonResponse($jsonOrderList, Response::HTTP_OK, [], true);
     }
     #[Route('/api/order/{id}', name: 'order_id', methods: ['GET'])]

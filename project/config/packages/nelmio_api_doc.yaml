@@ -1,8 +1,8 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: Prestataire
-            description: 'Une API de Noa Sillam avec des prestataires et des référent !'
+            title: Awazon
+            description: 'Une API de Nathan Sroussi avec des uttilisateurs et des commandes !'
             version: 2.0.0
         paths:
             /api/login_check:
