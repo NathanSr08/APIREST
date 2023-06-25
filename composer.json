@@ -1,0 +1,5 @@
+{
+    "require": {
+        "calliostro/spotify-web-api-bundle": "^1.1"
+    }
+}
